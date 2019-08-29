@@ -58,6 +58,7 @@ def parse_args():
         default='normal',
         help='initializer',
     )
+    parser.add_argument('--dataset_dir', '-d', help='dataset dir')
     # (180e3 * 8) / len(coco_trainval)
     default_max_epoch = (180e3 * 8) / 118287
     parser.add_argument(
@@ -117,7 +118,8 @@ def train(args, train_data, test_data, evaluator_type):
     args.seed = 0
     now = datetime.datetime.now()
     args.timestamp = now.isoformat()
-    args.out = osp.join(args.logs_dir, now.strftime('%Y%m%d_%H%M%S'))
+    outdir = osp.basename(args.dataset_dir + now.strftime('_%m%d'))
+    args.out = osp.join(args.logs_dir, outdir)
 
     args.batch_size = args.batch_size_per_gpu * args.n_gpu
 

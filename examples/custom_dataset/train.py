@@ -18,7 +18,8 @@ import train_common
 
 class VOCLikeDataset(chainer.dataset.DatasetMixin):
 
-    class_names = cmr.datasets.VOC2012InstanceSeg.class_names
+    # class_names = cmr.datasets.VOC2012InstanceSeg.class_names
+    class_names = ['hole']
 
     def __init__(self, root_dir):
         self._root_dir = root_dir
@@ -59,20 +60,22 @@ class VOCLikeDataset(chainer.dataset.DatasetMixin):
 
 def main():
     args = train_common.parse_args()
-
+    print(args.dataset_dir)
     args.logs_dir = osp.join(here, 'logs')
 
     # Dataset. For demonstration with few images, we use same dataset
     # for both train and test.
     root_dir = osp.join(
-        here, 'src/labelme/examples/instance_segmentation/data_dataset_voc',
+        here, args.dataset_dir,
     )
+
     args.dataset = 'custom'
     # 1 epoch = 3 images -> 60 images
     train_data = [VOCLikeDataset(root_dir=root_dir)] * 20
     train_data = chainer.datasets.ConcatenatedDataset(*train_data)
     test_data = VOCLikeDataset(root_dir=root_dir)
-    args.class_names = tuple(VOCLikeDataset.class_names.tolist())
+    # args.class_names = tuple(VOCLikeDataset.class_names.tolist())
+    args.class_names = VOCLikeDataset.class_names
 
     # Model.
     args.min_size = 600
